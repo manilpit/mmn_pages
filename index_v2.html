@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyse av praksis og fagomtale</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .chart-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+        .side-by-side {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .section {
+            flex: 1;
+            min-width: 300px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .bar-chart {
+            margin-top: 20px;
+            position: relative;
+            height: 400px;
+        }
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+        .color-box {
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+            display: inline-block;
+        }
+        .conclusion {
+            background-color: #e8f4fc;
+            padding: 20px;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+            margin-top: 30px;
+        }
+        @media (max-width: 768px) {
+            .side-by-side {
+                flex-direction: column;
+            }
+            .bar-chart {
+                height: 300px;
+            }
+        }
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #e2662d;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            margin: 0 5px;
+        }
+        .tab.active {
+            background-color: #43df72; /* Lyseblå farge */
+            color: #333; /* Endre tekstfargen for bedre kontrast */
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+    <script>
+        function openTab(tabName) {
+            var i;
+            var x = document.getElementsByClassName("tab-content");
+            for (i = 0; i < x.length; i++) {
+                x[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+
+            var tabs = document.getElementsByClassName("tab");
+            for (i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove("active");
+            }
+            document.querySelector('[onclick="openTab(\'' + tabName + '\')"]').classList.add("active");
+        }
+    </script>
+</head>
+<body>
+    <h1>Analyse av praksis og fagomtale</h1>
+    
+    <div class="tab-container">
+        <button class="tab active" onclick="openTab('original')">Praksis og fagliste</button>
+        <button class="tab" onclick="openTab('summary')">Omtalt fag og har fag</button>
+    </div>
+
+    <div id="original" class="tab-content active">
+        <div class="summary">
+            <h2>Oversikt</h2>
+            <p>Denne analysen utforsker hvordan studenter og kandidater omtaler praksis i kombinasjon med ulike fag. Dataene kommer fra tre ulike grupper:</p>
+            <ul>
+                <li><strong>Aktive studenter:</strong> Studenter som fortsatt følger utdanningsløpet</li>
+                <li><strong>Frafalte studenter:</strong> Studenter som har avbrutt utdanningen</li>
+                <li><strong>Lektorkandidater:</strong> Studenter som har fullført lektorutdanningen</li>
+            </ul>
+            <p>Analysen har avdekket mønstre i hvordan disse gruppene omtaler praksis i kombinasjon med spesifikke fag i fritekstsvar.</p>
+        </div>
+
+        <div class="chart-container">
+            <h2>Fagforekomster i kombinasjon med praksis</h2>
+            <p>Grafen viser antall forekomster av ulike fag i kombinasjon med praksis-relaterte begreper:</p>
+            
+            <div class="chart-legend">
+                <div class="legend-item"><span class="color-box" style="background-color: #3498db;"></span>Aktive</div>
+                <div class="legend-item"><span class="color-box" style="background-color: #e74c3c;"></span>Frafalte</div>
+                <div class="legend-item"><span class="color-box" style="background-color: #2ecc71;"></span>Lektorkandidater</div>
+            </div>
+            
+            <svg class="bar-chart" width="100%" height="100%" viewBox="0 0 800 400">
+                <!-- Y-axis and labels -->
+                <line x1="60" y1="350" x2="60" y2="50" stroke="#333" stroke-width="1"/>
+                <text x="30" y="50" text-anchor="middle" alignment-baseline="middle" font-size="12">25</text>
+                <text x="30" y="125" text-anchor="middle" alignment-baseline="middle" font-size="12">20</text>
+                <text x="30" y="200" text-anchor="middle" alignment-baseline="middle" font-size="12">15</text>
+                <text x="30" y="275" text-anchor="middle" alignment-baseline="middle" font-size="12">10</text>
+                <text x="30" y="350" text-anchor="middle" alignment-baseline="middle" font-size="12">5</text>
+                <text x="30" y="380" text-anchor="middle" alignment-baseline="middle" font-size="12">0</text>
+                
+                <!-- X-axis and grid lines -->
+                <line x1="60" y1="350" x2="780" y2="350" stroke="#333" stroke-width="1"/>
+                <line x1="60" y1="50" x2="780" y2="50" stroke="#ddd" stroke-width="0.5" stroke-dasharray="5,5"/>
+                <line x1="60" y1="125" x2="780" y2="125" stroke="#ddd" stroke-width="0.5" stroke-dasharray="5,5"/>
+                <line x1="60" y1="200" x2="780" y2="200" stroke="#ddd" stroke-width="0.5" stroke-dasharray="5,5"/>
+                <line x1="60" y1="275" x2="780" y2="275" stroke="#ddd" stroke-width="0.5" stroke-dasharray="5,5"/>
+                
+                <!-- Bars for "Historie" -->
+                <g transform="translate(100,0)">
+                    <rect x="0" y="230" width="20" height="120" fill="#3498db" />
+                    <rect x="25" y="342" width="20" height="8" fill="#e74c3c" />
+                    <rect x="50" y="342" width="20" height="8" fill="#2ecc71" />
+                    <text x="25" y="370" text-anchor="middle" font-size="12">Historie</text>
+                </g>
+                
+                <!-- Bars for "Samfunnsfag" -->
+                <g transform="translate(180,0)">
+                    <rect x="0" y="246" width="20" height="104" fill="#3498db" />
+                    <rect x="25" y="350" width="20" height="0" fill="#e74c3c" />
+                    <rect x="50" y="350" width="20" height="0" fill="#2ecc71" />
+                    <text x="25" y="370" text-anchor="middle" font-size="12">Samfunnsfag</text>
+                </g>
+                
+                <!-- Bars for "Engelsk" -->
+                <g transform="translate(260,0)">
+                    <rect x="0" y="290" width="20" height="60" fill="#3498db" />
+                    <rect x="25" y="346" width="20" height="4" fill="#e74c3c" />
+                    <rect x="50" y="342" width="20" height="8" fill="#2ecc71" />
+                    <text x="25" y="370" text-anchor="middle" font-size="12">Engelsk</text>
+                </g>
+                
+                <!-- Bars for "Norsk/nordisk" -->
+                <g transform="translate(340,0)">
+                    <rect x="0" y="295" width="20" height="55" fill="#3498db" />
+                    <rect x="25" y="330" width="20" height="20" fill="#e74c3c" />
+                    <rect x="50" y="335" width="20" height="15" fill="#2ecc71" />
+                    <text x="25" y="370" text-anchor="middle" font-size="12">Norsk/nordisk</text>
+                </g>
+                
+                <!-- Bars for "Kjemi" -->
+                <g transform="translate(420,0)">
+                    <rect x="0" y="295" width="20" height="55" fill="#3498db" />
+                    <rect x="25" y="342" width="20" height="8" fill="#e74c3c" />
+                    <rect x="50" y="350" width="20" height="0" fill="#2ecc71" />
+                    <text x="25" y="370" text-anchor="middle" font-size="12">Kjemi</text>
+                </g>
+                
+                <!-- Bars for "Matematikk" -->
+                <g transform="translate(500,0)">
+                    <rect x="0" y="305" width="20" height="45" fill="#3498db" />
+                    <rect x="25" y="342" width="20" height="8" fill="#e74c3c" />
+                    <rect x="50" y="350" width="20" height="0" fill="#2ecc71" />
+                    <text x="25" y="370" text-anchor="middle" font-size="12">Matematikk</text>
+                </g>
+                
+                <!-- Bars for "Biologi" -->
+                <g transform="translate(580,0)">
+                    <rect x="0" y="315" width="20" height="35" fill="#3498db" />
+                    <rect x="25" y="350" width="20" height="0" fill="#e74c3c" />
+                    <rect x="50" y="350" width="20" height="0" fill="#2ecc71" />
+                    <text x="25" y="370" text-anchor="middle" font-size="12">Biologi</text>
+                </g>
+                
+                <!-- Bars for "Idrett" -->
+                <g transform="translate(660,0)">
+                    <rect x="0" y="350" width="20" height="0" fill="#3498db" />
+                    <rect x="25" y="350" width="20" height="0" fill="#e74c3c" />
+                    <rect x="50" y="342" width="20" height="8" fill="#2ecc71" />
+                    <text x="25" y="370" text-anchor="middle" font-size="12">Idrett</text>
+                </g>
+                
+                <!-- Title -->
+                <text x="400" y="25" text-anchor="middle" font-weight="bold" font-size="14">Forekomster av fag i kombinasjon med praksis</text>
+                <text x="400" y="410" text-anchor="middle" font-size="14">Fagområde</text>
+                <text x="20" y="200" text-anchor="middle" font-size="14" transform="rotate(-90,20,200)">Antall sitater</text>
+            </svg>
+        </div>
+
+        <div class="side-by-side">
+            <div class="section chart-container">
+                <h2>Aktive studenter - Topp fag i praksissitater</h2>
+                <table>
+                    <tr>
+                        <th>Fag</th>
+                        <th>Antall</th>
+                        <th>Gj.snitt %</th>
+                        <th>Maks %</th>
+                    </tr>
+                    <tr>
+                        <td>Historie</td>
+                        <td>22</td>
+                        <td>1,17</td>
+                        <td>1,8</td>
+                    </tr>
+                    <tr>
+                        <td>Fag 2</td>
+                        <td>19</td>
+                        <td>1,50</td>
+                        <td>1,8</td>
+                    </tr>
+                    <tr>
+                        <td>Fag 1</td>
+                        <td>18</td>
+                        <td>1,35</td>
+                        <td>1,9</td>
+                    </tr>
+                    <tr>
+                        <td>Samfunnsfag</td>
+                        <td>17</td>
+                        <td>0,93</td>
+                        <td>1,4</td>
+                    </tr>
+                    <tr>
+                        <td>Disiplinfag</td>
+                        <td>16</td>
+                        <td>0,87</td>
+                        <td>1,7</td>
+                    </tr>
+                </table>
+                <p>Aktive studenter nevner oftest Historie, etterfulgt av "Fag 2" og "Fag 1" når de omtaler praksis. Samfunnsfag og disiplinfag kommer også høyt opp på listen.</p>
+            </div>
+
+            <div class="section chart-container">
+                <h2>Frafalte studenter - Topp fag i praksissitater</h2>
+                <table>
+                    <tr>
+                        <th>Fag</th>
+                        <th>Antall</th>
+                        <th>Gj.snitt %</th>
+                        <th>Maks %</th>
+                    </tr>
+                    <tr>
+                        <td>Norsk</td>
+                        <td>4</td>
+                        <td>0,80</td>
+                        <td>1,1</td>
+                    </tr>
+                    <tr>
+                        <td>Nordisk</td>
+                        <td>4</td>
+                        <td>0,85</td>
+                        <td>1,0</td>
+                    </tr>
+                    <tr>
+                        <td>Historie</td>
+                        <td>2</td>
+                        <td>0,70</td>
+                        <td>0,7</td>
+                    </tr>
+                    <tr>
+                        <td>Kjemi</td>
+                        <td>2</td>
+                        <td>0,45</td>
+                        <td>0,5</td>
+                    </tr>
+                    <tr>
+                        <td>Matematikk</td>
+                        <td>2</td>
+                        <td>0,70</td>
+                        <td>0,7</td>
+                    </tr>
+                </table>
+                <p>Frafalte studenter nevner betydelig sjeldnere fag i kombinasjon med praksis. Norsk/nordisk er de fagene som oftest nevnes av denne gruppen.</p>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2>Lektorkandidater - Topp fag i praksissitater</h2>
+            <table>
+                <tr>
+                    <th>Fag</th>
+                    <th>Antall</th>
+                    <th>Gj.snitt %</th>
+                    <th>Maks %</th>
+                </tr>
+                <tr>
+                    <td>Norsk</td>
+                    <td>3</td>
+                    <td>1,27</td>
+                    <td>2,2</td>
+                </tr>
+                <tr>
+                    <td>Engelsk</td>
+                    <td>2</td>
+                    <td>0,80</td>
+                    <td>0,8</td>
+                </tr>
+                <tr>
+                    <td>Idrett</td>
+                    <td>2</td>
+                    <td>2,55</td>
+                    <td>2,9</td>
+                </tr>
+            </table>
+            <p>Lektorkandidater nevner oftest Norsk, etterfulgt av Engelsk og Idrett når de omtaler praksis.</p>
+        </div>
+    </div>
+
+    <div id="summary" class="tab-content">
+        <div class="summary">
+            <h2>Oversikt</h2>
+            <p>Denne analysen utforsker hvordan studenter og kandidater omtaler praksis i kombinasjon med ulike fag. Dataene kommer fra tre ulike grupper:</p>
+            <ul>
+                <li><strong>Aktive studenter:</strong> Studenter som fortsatt følger utdanningsløpet</li>
+                <li><strong>Frafalte studenter:</strong> Studenter som har avbrutt utdanningen</li>
+                <li><strong>Lektorkandidater:</strong> Studenter som har fullført lektorutdanningen</li>
+            </ul>
+        </div>
+
+        <div class="chart-container">
+            <h2>Identifiserte fritekstfelt</h2>
+            <p>Analysen identifiserte 14 fritekstfelt som ble inkludert i analysen, blant annet:</p>
+            <ul>
+                <li>instnavn</li>
+                <li>analyseprogramnavn</li>
+                <li>studieprogramnavn</li>
+                <li>STUDIEPROGNAVN_STUDIERETNING</li>
+                <li>hvagjordu_txt</li>
+                <li>arsaker_txt</li>
+                <li>studiefag_txt</li>
+                <li>aktivitet_txt</li>
+                <li>praks_hatttype_txt</li>
+                <li>praks_laererik_txt</li>
+                <li>praks_sistetype_txt</li>
+                <li>praks_sisteklasse_txt</li>
+                <li>praks_sisteerfar_txt</li>
+                <li>forbedrepgm_txt</li>
+            </ul>
+        </div>
+
+        <div class="chart-container">
+            <h2>Identifiserte praksis-sitater</h2>
+            <p>Totalt antall identifiserte praksis-sitater: 1014. Eksempler på koblede sitater:</p>
+            <ul>
+                <li><strong>Student 455983:</strong> "Har siste praksis- og pedagogikksemester nå."</li>
+                <li><strong>Student 2259087:</strong> "Det er også gode muligheter for videreutdanning når man har pedagogikk. Dette er en forsikring om at hvis denne utdannelsen ikke passer meg, i praksis, så kan jeg ta en rekke videreutdannelser."</li>
+                <li><strong>Student 2149858:</strong> "Jeg vil ha mer pedagogikk. Mer timer hvor lærer hjelper oss med vanskelige situasjoner som kan skje i klasserommet. Jeg vil at vi fokuserer oss mer på praksis."</li>
+                <li><strong>Student 2203272:</strong> "Går nå naturfag årsstudium, da jeg har idrett årsstudium fra tidligere så har praksis idrett."</li>
+                <li><strong>Student 563176:</strong> "Praksis/profesjonsemne med pedagogikk og fagdidaktikk."</li>
+            </ul>
+        </div>
+
+        <div class="chart-container">
+            <h2>Analyserer fag-sitater</h2>
+            <p>Topp 10 fag basert på antall sitater:</p>
+            <ul>
+                <li>Fag 2: 375 sitater</li>
+                <li>Fag 13: 332 sitater</li>
+                <li>Fag 7: 301 sitater</li>
+                <li>Fag 16: 264 sitater</li>
+                <li>Fag 11: 167 sitater</li>
+                <li>Fag 15: 129 sitater</li>
+                <li>Fag 1: 72 sitater</li>
+                <li>Fag 10: 72 sitater</li>
+                <li>Fag 4: 54 sitater</li>
+                <li>Fag 19: 52 sitater</li>
+            </ul>
+        </div>
+
+        <div class="chart-container">
+            <h2>Fagandeler</h2>
+            <p>Topp 10 fag basert på antall studenter:</p>
+            <ul>
+                <li>Fag 13: 601 studenter (33.7%)</li>
+                <li>Fag 2: 568 studenter (31.9%)</li>
+                <li>Fag 7: 488 studenter (27.4%)</li>
+                <li>Fag 16: 415 studenter (23.3%)</li>
+                <li>Fag 11: 330 studenter (18.5%)</li>
+                <li>Fag 15: 212 studenter (11.9%)</li>
+                <li>Fag 10: 137 studenter (7.68%)</li>
+                <li>Fag 1: 131 studenter (7.35%)</li>
+                <li>Fag 4: 107 studenter (6.00%)</li>
+                <li>Fag 8: 93 studenter (5.22%)</li>
+            </ul>
+        </div>
+
+        <div class="chart-container">
+            <h2>Representasjon</h2>
+            <p>Topp 10 fag rangert etter over/underrepresentasjon:</p>
+            <ul>
+                <li>Fag 23: 8 sitater (0.880)</li>
+                <li>Fag 6: 29 sitater (0.689)</li>
+                <li>Fag 18: 45 sitater (0.649)</li>
+                <li>Fag 21: 37 sitater (0.581)</li>
+                <li>Fag 2: 375 sitater (0.581)</li>
+                <li>Fag 16: 264 sitater (0.560)</li>
+                <li>Fag 7: 301 sitater (0.543)</li>
+                <li>Fag 15: 129 sitater (0.535)</li>
+                <li>Fag 19: 52 sitater (0.532)</li>
+                <li>Fag 9: 5 sitater (0.489)</li>
+            </ul>
+        </div>
+
+        <div class="conclusion">
+            <h2>Hovedfunn</h2>
+            <ol>
+                <li><strong>Aktive studenter nevner praksis betydelig oftere</strong> i kombinasjon med fag enn frafalte studenter og lektorkandidater.</li>
+                <li><strong>Historiefaget dominerer</strong> blant aktive studenter når det gjelder omtale av praksis, med 22 sitater totalt.</li>
+                <li><strong>Norsk/nordisk er mest fremtredende</strong> blant frafalte studenter.</li>
+                <li><strong>Idrett</strong> har høyest gjennomsnittlig prosentandel blant lektorkandidater (2,55%).</li>
+                <li><strong>Samfunnsfaglige og humanistiske fag</strong> nevnes generelt oftere i kombinasjon med praksis enn realfagene.</li>
+            </ol>
+        </div>
+        <div class="chart-container">
+            <h2>Visualiseringer</h2>
+            <p>Her er to visualiseringer som illustrerer analysen:</p>
+            <img src="/home/manilpit/github/manilpit_github/mmn_pages/fag_status_prosent.png" alt="Visualisering 1" style="max-width: 100%; height: auto; margin-bottom: 20px;">
+            <img src="/home/manilpit/github/manilpit_github/mmn_pages/topp_fag_status.png" alt="Visualisering 2" style="max-width: 100%; height: auto;">
+        </div>
+        <div class="chart-container">
+            <h2>Topp 15 fag nevnt i praksis-sitater</h2>
+            <p>Grafen viser antall sitater som nevner om studentene har tatt faget eller ikke:</p>
+            
+            <div class="chart-legend">
+                <div class="legend-item"><span class="color-box" style="background-color: #2ecc71;"></span>Har fag(et)</div>
+                <div class="legend-item"><span class="color-box" style="background-color: #e74c3c;"></span>Har ikke fag(et)</div>
+            </div>
+            
+            <svg class="bar-chart" width="100%" height="100%" viewBox="0 0 800 400">
+                <!-- Y-axis and labels -->
+                <line x1="60" y1="350" x2="60" y2="50" stroke="#333" stroke-width="1"/>
+                <text x="30" y="50" text-anchor="middle" alignment-baseline="middle" font-size="12">25</text>
+                <text x="30" y="200" text-anchor="middle" alignment-baseline="middle" font-size="12">12.5</text>
+                <text x="30" y="350" text-anchor="middle" alignment-baseline="middle" font-size="12">0</text>
+                
+                <!-- X-axis and grid lines -->
+                <line x1="60" y1="350" x2="780" y2="350" stroke="#333" stroke-width="1"/>
+                <line x1="60" y1="50" x2="780" y2="50" stroke="#ddd" stroke-width="0.5" stroke-dasharray="5,5"/>
+                <line x1="60" y1="200" x2="780" y2="200" stroke="#ddd" stroke-width="0.5" stroke-dasharray="5,5"/>
+                
+                <!-- Bars for each subject -->
+                <g transform="translate(100,0)">
+                    <rect x="0" y="150" width="20" height="200" fill="#2ecc71" />
+                    <rect x="25" y="300" width="20" height="50" fill="#e74c3c" />
+                    <text x="25" y="370" text-anchor="middle" font-size="12">Historie</text>
+                </g>
+                
+                <g transform="translate(180,0)">
+                    <rect x="0" y="200" width="20" height="150" fill="#2ecc71" />
+                    <rect x="25" y="350" width="20" height="0" fill="#e74c3c" />
+                    <text x="25" y="370" text-anchor="middle" font-size="12">Samfunnsfag</text>
+                </g>
+                
+                <g transform="translate(260,0)">
+                    <rect x="0" y="225" width="20" height="125" fill="#2ecc71" />
+                    <rect x="25" y="300" width="20" height="50" fill="#e74c3c" />
+                    <text x="25" y="370" text-anchor="middle" font-size="12">Engelsk</text>
+                </g>
+                
+                <g transform="translate(340,0)">
+                    <rect x="0" y="250" width="20" height="100" fill="#2ecc71" />
+                    <rect x="25" y="275" width="20" height="75" fill="#e74c3c" />
+                    <text x="25" y="370" text-anchor="middle" font-size="12">Norsk/nordisk</text>
+                </g>
+                
+                <g transform="translate(420,0)">
+                    <rect x="0" y="250" width="20" height="100" fill="#2ecc71" />
+                    <rect x="25" y="300" width="20" height="50" fill="#e74c3c" />
+                    <text x="25" y="370" text-anchor="middle" font-size="12">Kjemi</text>
+                </g>
+                
+                <g transform="translate(500,0)">
+                    <rect x="0" y="275" width="20" height="75" fill="#2ecc71" />
+                    <rect x="25" y="300" width="20" height="50" fill="#e74c3c" />
+                    <text x="25" y="370" text-anchor="middle" font-size="12">Matematikk</text>
+                </g>
+                
+                <g transform="translate(580,0)">
+                    <rect x="0" y="300" width="20" height="50" fill="#2ecc71" />
+                    <rect x="25" y="350" width="20" height="0" fill="#e74c3c" />
+                    <text x="25" y="370" text-anchor="middle" font-size="12">Biologi</text>
+                </g>
+                
+                <g transform="translate(660,0)">
+                    <rect x="0" y="350" width="20" height="0" fill="#2ecc71" />
+                    <rect x="25" y="350" width="20" height="0" fill="#e74c3c" />
+                    <text x="25" y="370" text-anchor="middle" font-size="12">Idrett</text>
+                </g>
+                
+                <!-- Title -->
+                <text x="400" y="25" text-anchor="middle" font-weight="bold" font-size="14">Topp 15 fag nevnt i praksis-sitater</text>
+                <text x="400" y="410" text-anchor="middle" font-size="14">Fagområde</text>
+                <text x="20" y="200" text-anchor="middle" font-size="14" transform="rotate(-90,20,200)">Antall sitater</text>
+            </svg>
+        </div>
+    </div>
+</body>
+</html>
