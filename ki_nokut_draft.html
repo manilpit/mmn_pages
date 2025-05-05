@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veiledning for utvikling av KI-modell for NOKUT</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+        }
+        h1 {
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: #fff;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        pre, code {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+        }
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .toc {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .toc a {
+            color: #2c3e50;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            table, th, td {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Veiledning for utvikling av KI-modell for NOKUT</h1>
+        <p><strong>Forfatter:</strong> KI-assistent</p>
+        <p><strong>Dato:</strong> Oktober 2023</p>
+
+        <div class="toc">
+            <h2>Innholdsfortegnelse</h2>
+            <ul>
+                <li><a href="#innledning">Innledning</a></li>
+                <li><a href="#del1">Del 1: Anbefaling av KI-modell</a>
+                    <ul>
+                        <li><a href="#bakgrunn">Bakgrunn og krav</a></li>
+                        <li><a href="#sammenligning">Sammenligning av modeller</a></li>
+                        <li><a href="#anbefaling">Anbefaling: Vicuna 13B</a></li>
+                        <li><a href="#implementering">Implementeringsråd</a></li>
+                        <li><a href="#alternativer">Alternativer</a></li>
+                        <li><a href="#konklusjon1">Konklusjon</a></li>
+                    </ul>
+                </li>
+                <li><a href="#del2">Del 2: Finjustering av Vicuna 13B på egne data</a>
+                    <ul>
+                        <li><a href="#introduksjon">Introduksjon</a></li>
+                        <li><a href="#forutsetninger">Forutsetninger</a></li>
+                        <li><a href="#steg">Steg-for-steg veiledning</a></li>
+                        <li><a href="#tips">Viktige tips og hensyn</a></li>
+                        <li><a href="#ressurser">Ressurser og verktøy</a></li>
+                        <li><a href="#konklusjon2">Konklusjon</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <h2 id="innledning">Innledning</h2>
+        <p>Denne rapporten gir en detaljert veiledning og anbefaling for utvikling av en KI-modell for tekstoppsummering og arbeidsassistent, trent på NOKUT sine egne data. Vi vurderer ulike modeller basert på funksjonalitet og inference-kostnader, og gir en steg-for-steg veiledning for finjustering av den anbefalte modellen.</p>
+
+        <h2 id="del1">Del 1: Anbefaling av KI-modell</h2>
+        <h3 id="bakgrunn">Bakgrunn og krav</h3>
+        <p>Vi planlegger å utvikle en KI-modell for tekstoppsummering og arbeidsassistent, trent på NOKUT sine egne data. Modellen må balansere funksjonalitet og inference-kostnader, og møte følgende krav:</p>
+
+        <h4>Krav til funksjonalitet</h4>
+        <ol>
+            <li><strong>Tekstoppsummering</strong>: Modellen må kunne generere presise og konsise sammendrag av lange dokumenter.</li>
+            <li><strong>Arbeidsassistent</strong>: Modellen må kunne hjelpe med administrative oppgaver, som å svare på spørsmål, organisere informasjon, og gi anbefalinger basert på NOKUT sine data.</li>
+            <li><strong>Nøyaktighet</strong>: Høy nøyaktighet i forståelse og generering av tekst.</li>
+            <li><strong>Kontekstforståelse</strong>: Evne til å forstå og behandle kontekst fra NOKUT sine spesifikke data.</li>
+        </ol>
+
+        <h4>Inference-kostnader</h4>
+        <ol>
+            <li><strong>Compute Resources</strong>: Optimal bruk av CPU/GPU for å minimere kostnader.</li>
+            <li><strong>Latency</strong>: Lav responstid for å sikre effektivitet i arbeidsflyten.</li>
+            <li><strong>Skalerbarhet</strong>: Kostnadseffektiv skalerbarhet for økende datamengde og forespørsler.</li>
+        </ol>
+
+        <h4>Spesifikke behov</h4>
+        <ul>
+            <li>Modellen må være open-source og kunne finjusteres med NOKUT sine data.</li>
+            <li>Vurder modeller som Grok AI, LLaMA 2, BERT, BLOOM, Falcon 180B, XLNet, OPT-175B, XGen-7B, GPT-NeoX, GPT-J, og Vicuna 13B.</li>
+        </ul>
+
+        <h3 id="sammenligning">Sammenligning av modeller</h3>
+        <p>Vi vurderer modellene basert på funksjonalitet (tekstoppsummering, kontekstforståelse, nøyaktighet), inference-kostnader (compute resources, latency, skalerbarhet), og egnethet for finjustering og open-source tilgjengelighet.</p>
+
+        <h4>Oversikt over modellene</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Modell</th>
+                    <th>Størrelse (parametre)</th>
+                    <th>Open-Source</th>
+                    <th>Tekstoppsummering</th>
+                    <th>Kontekstforståelse</th>
+                    <th>Nøyaktighet</th>
+                    <th>Compute Kostnader</th>
+                    <th>Latency</th>
+                    <th>Skalerbarhet</th>
+                    <th>Finjustering</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Grok AI</td>
+                    <td>Ukjent (xAI)</td>
+                    <td>Nei</td>
+                    <td>Høy</td>
+                    <td>Høy</td>
+                    <td>Høy</td>
+                    <td>Høy (ukjent)</td>
+                    <td>Middels</td>
+                    <td>Ukjent</td>
+                    <td>Vanskelig</td>
+                </tr>
+                <tr>
+                    <td>LLaMA 2</td>
+                    <td>7B-70B</td>
+                    <td>Ja (begrenset kommersiell bruk)</td>
+                    <td>Middels-Høy</td>
+                    <td>Høy</td>
+                    <td>Høy</td>
+                    <td>Middels-Høy</td>
+                    <td>Middels</td>
+                    <td>God</td>
+                    <td>Ja</td>
+                </tr>
+                <tr>
+                    <td>BERT</td>
+                    <td>110M-340M</td>
+                    <td>Ja</td>
+                    <td>Middels</td>
+                    <td>Middels</td>
+                    <td>Middels</td>
+                    <td>Lav</td>
+                    <td>Lav</td>
+                    <td>God</td>
+                    <td>Ja</td>
+                </tr>
+                <tr>
+                    <td>BLOOM</td>
+                    <td>176B</td>
+                    <td>Ja</td>
+                    <td>Middels-Høy</td>
+                    <td>Middels-Høy</td>
+                    <td>Middels-Høy</td>
+                    <td>Høy</td>
+                    <td>Høy</td>
+                    <td>Middels</td>
+                    <td>Ja</td>
+                </tr>
+                <tr>
+                    <td>Falcon 180B</td>
+                    <td>180B</td>
+                    <td>Ja</td>
+                    <td>Høy</td>
+                    <td>Høy</td>
+                    <td>Høy</td>
+                    <td>Svært Høy</td>
+                    <td>Høy</td>
+                    <td>Middels</td>
+                    <td>Ja</td>
+                </tr>
+                <tr>
+                    <td>XLNet</td>
+                    <td>110M-340M</td>
+                    <td>Ja</td>
+                    <td>Middels</td>
+                    <td>Middels</td>
+                    <td>Middels</td>
+                    <td>Lav</td>
+                    <td>Lav</td>
+                    <td>God</td>
+                    <td>Ja</td>
+                </tr>
+                <tr>
+                    <td>OPT-175B</td>
+                    <td>175B</td>
+                    <td>Ja</td>
+                    <td>Middels-Høy</td>
+                    <td>Middels-Høy</td>
+                    <td>Middels-Høy</td>
+                    <td>Høy</td>
+                    <td>Høy</td>
+                    <td>Middels</td>
+                    <td>Ja</td>
+                </tr>
+                <tr>
+                    <td>XGen-7B</td>
+                    <td>7B</td>
+                    <td>Ja</td>
+                    <td>Middels</td>
+                    <td>Middels-Høy</td>
+                    <td>Middels-Høy</td>
+                    <td>Middels</td>
+                    <td>Middels</td>
+                    <td>God</td>
+                    <td>Ja</td>
+                </tr>
+                <tr>
+                    <td>GPT-NeoX</td>
+                    <td>20B</td>
+                    <td>Ja</td>
+                    <td>Middels-Høy</td>
+                    <td>Middels-Høy</td>
+                    <td>Middels-Høy</td>
+                    <td>Middels-Høy</td>
+                    <td>Middels</td>
+                    <td>God</td>
+                    <td>Ja</td>
+                </tr>
+                <tr>
+                    <td>GPT-J</td>
+                    <td>6B</td>
+                    <td>Ja</td>
+                    <td>Middels</td>
+                    <td>Middels</td>
+                    <td>Middels</td>
+                    <td>Middels</td>
+                    <td>Middels</td>
+                    <td>God</td>
+                    <td>Ja</td>
+                </tr>
+                <tr>
+                    <td>Vicuna 13B</td>
+                    <td>13B</td>
+                    <td>Ja</td>
+                    <td>Høy</td>
+                    <td>Høy</td>
+                    <td>Høy</td>
+                    <td>Middels-Høy</td>
+                    <td>Middels</td>
+                    <td>God</td>
+                    <td>Ja</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4>Detaljert vurdering</h4>
+        <ol>
+            <li><strong>Grok AI (xAI)</strong>
+                <ul>
+                    <li><strong>Fordeler</strong>: Høy ytelse for generell tekstforståelse og assistanse.</li>
+                    <li><strong>Ulemper</strong>: Ikke open-source, ukjente kostnader og begrenset tilgang til finjustering.</li>
+                    <li><strong>Egnethet</strong>: Uegnet pga. manglende open-source-status og usikkerhet rundt kostnader.</li>
+                </ul>
+            </li>
+            <li><strong>LLaMA 2 (7B-70B)</strong>
+                <ul>
+                    <li><strong>Fordeler</strong>: God balanse mellom ytelse og ressursbruk, spesielt i 13B- eller 30B-versjonene. Støtter finjustering og har sterk kontekstforståelse.</li>
+                    <li><strong>Ulemper</strong>: Begrenset kommersiell lisens, noe som kan skape juridiske utfordringer. Middels-høy compute-kostnad for større varianter.</li>
+                    <li><strong>Egnethet</strong>: Lovende, spesielt for mindre varianter (7B-13B) med optimalisering.</li>
+                </ul>
+            </li>
+            <li><strong>BERT (110M-340M)</strong>
+                <ul>
+                    <li><strong>Fordeler</strong>: Lav compute-kostnad, godt egnet for spesifikke oppgaver som klassifisering og oppsummering med finjustering.</li>
+                    <li><strong>Ulemper</strong>: Begrenset evne til generativ tekst (må pares med andre modeller for assistanseoppgaver).</li>
+                    <li><strong>Egnethet</strong>: Egnet for oppsummering, men ikke ideell som arbeidsassistent.</li>
+                </ul>
+            </li>
+            <li><strong>BLOOM (176B)</strong>
+                <ul>
+                    <li><strong>Fordeler</strong>: Sterk på flerspråklig tekst og kontekstforståelse. Open-source.</li>
+                    <li><strong>Ulemper</strong>: Svært høy compute-kostnad og latency, noe som gjør den mindre kostnadseffektiv.</li>
+                    <li><strong>Egnethet</strong>: Mindre egnet pga. høye kostnader.</li>
+                </ul>
+            </li>
+            <li><strong>Falcon 180B</strong>
+                <ul>
+                    <li><strong>Fordeler</strong>: Svært høy ytelse og nøyaktighet for komplekse oppgaver. Open-source.</li>
+                    <li><strong>Ulemper</strong>: Ekstremt høye compute-krav, noe som gir høye kostnader og latency.</li>
+                    <li><strong>Egnethet</strong>: Uegnet pga. kostnader.</li>
+                </ul>
+            </li>
+            <li><strong>XLNet (110M-340M)</strong>
+                <ul>
+                    <li><strong>Fordeler</strong>: Lav compute-kostnad, god på kontekstforståelse.</li>
+                    <li><strong>Ulemper</strong>: Begrenset generativ evne, lik BERT.</li>
+                    <li><strong>Egnethet</strong>: Egnet for oppsummering, men ikke som assistent.</li>
+                </ul>
+            </li>
+            <li><strong>OPT-175B</strong>
+                <ul>
+                    <li><strong>Fordeler</strong>: God ytelse for generativ tekst. Open-source.</li>
+                    <li><strong>Ulemper</strong>: Høye compute-kostnader og latency.</li>
+                    <li><strong>Egnethet</strong>: Mindre egnet pga. kostnader.</li>
+                </ul>
+            </li>
+            <li><strong>XGen-7B</strong>
+                <ul>
+                    <li><strong>Fordeler</strong>: Lavere compute-kostnad, god på generativ tekst og kontekstforståelse. Open-source.</li>
+                    <li><strong>Ulemper</strong>: Mindre testet enn andre modeller, noe som kan gi usikkerhet i ytelse.</li>
+                    <li><strong>Egnethet</strong>: Lovende for mindre budsjetter.</li>
+                </ul>
+            </li>
+            <li><strong>GPT-NeoX (20B)</strong>
+                <ul>
+                    <li><strong>Fordeler</strong>: God balanse mellom ytelse og kostnad. Open-source og egnet for finjustering.</li>
+                    <li><strong>Ulemper</strong>: Middels-høy compute-kostnad.</li>
+                    <li><strong>Egnethet</strong>: God kandidat.</li>
+                </ul>
+            </li>
+            <li><strong>GPT-J (6B)</strong>
+                <ul>
+                    <li><strong>Fordeler</strong>: Lavere compute-kostnad, open-source, egnet for finjustering.</li>
+                    <li><strong>Ulemper</strong>: Begrenset ytelse sammenlignet med større modeller.</li>
+                    <li><strong>Egnethet</strong>: Egnet for mindre krevende oppgaver.</li>
+                </ul>
+            </li>
+            <li><strong>Vicuna 13B</strong>
+                <ul>
+                    <li><strong>Fordeler</strong>: Høy ytelse for både oppsummering og assistanseoppgaver. Optimalisert for chat og kontekstforståelse. Open-source og egnet for finjustering.</li>
+                    <li><strong>Ulemper</strong>: Middels-høy compute-kostnad, men lavere enn større modeller som BLOOM eller Falcon.</li>
+                    <li><strong>Egnethet</strong>: Svært lovende.</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h3 id="anbefaling">Anbefaling: Vicuna 13B</h3>
+        <p>Basert på analysen ovenfor, anbefaler jeg <strong>Vicuna 13B</strong> som den beste modellen for NOKUT sitt formål. Begrunnelsen er som følger:</p>
+        <ul>
+            <li><strong>Funksjonalitet</strong>: Vicuna 13B har vist høy ytelse i både tekstoppsummering og conversational AI-oppgaver (arbeidsassistent). Den er spesielt optimalisert for kontekstforståelse og nøyaktighet, noe som er avgjørende for å behandle NOKUT sine spesifikke data.</li>
+            <li><strong>Inference-Kostnader</strong>: Med 13 milliarder parametere krever Vicuna moderate compute-ressurser sammenlignet med større modeller som BLOOM (176B) eller Falcon (180B). Den kan kjøres på en enkelt GPU med optimalisering (f.eks. 4-bit kvantisering), noe som reduserer kostnader og latency. Skalerbarhet er også god, da den kan håndtere økende datamengder med distribuert inferens.</li>
+            <li><strong>Open-Source og Finjustering</strong>: Vicuna er open-source og støtter finjustering, noe som gjør det mulig å tilpasse modellen til NOKUT sine data. Det finnes også et stort fellesskap og ressurser for støtte.</li>
+            <li><strong>Balansert Valg</strong>: Sammenlignet med mindre modeller som GPT-J (6B) eller XGen-7B, gir Vicuna bedre ytelse for komplekse oppgaver. Sammenlignet med større modeller som LLaMA 2 (70B) eller OPT-175B, tilbyr den betydelig lavere kostnader og latency.</li>
+        </ul>
+
+        <h3 id="implementering">Implementeringsråd</h3>
+        <ul>
+            <li><strong>Finjustering</strong>: Bruk NOKUT sine data til å finjustere Vicuna 13B, med fokus på tekstoppsummering og administrative oppgaver. Dette kan gjøres med verktøy som Hugging Face Transformers eller DeepSpeed for effektiv trening.</li>
+            <li><strong>Optimalisering</strong>: Implementer teknikker som kvantisering (4-bit eller 8-bit) og pruning for å redusere inference-kostnader og latency ytterligere. Bruk GPU-er som NVIDIA A100 eller V100 for kostnadseffektiv inferens.</li>
+            <li><strong>Skalerbarhet</strong>: Sett opp en distribuert inferensløsning med verktøy som Triton Inference Server for å håndtere økende forespørsler.</li>
+            <li><strong>Overvåking</strong>: Kontinuerlig overvåk modellens ytelse og kostnader for å justere ressursbruk etter behov.</li>
+        </ul>
+
+        <h3 id="alternativer">Alternativer</h3>
+        <p>Hvis Vicuna 13B av en eller annen grunn ikke møter forventningene, kan følgende alternativer vurderes:</p>
+        <ul>
+            <li><strong>LLaMA 2 13B</strong>: Hvis lisensbegrensningene ikke er et problem, tilbyr denne modellen lignende ytelse som Vicuna, men med potensielt høyere støtte fra Meta AI-fellesskapet.</li>
+            <li><strong>GPT-NeoX 20B</strong>: Et godt alternativ for litt høyere ytelse, men med noe høyere compute-kostnader.</li>
+        </ul>
+
+        <h3 id="konklusjon1">Konklusjon</h3>
+        <p>Vicuna 13B tilbyr den beste balansen mellom funksjonalitet, kostnader og egnethet for NOKUT sitt brukstilfelle. Med riktig finjustering og optimalisering kan denne modellen effektivt støtte tekstoppsummering og arbeidsassistent-oppgaver samtidig som inference-kostnadene holdes på et akseptabelt nivå.</p>
+
+        <h2 id="del2">Del 2: Finjustering av Vicuna 13B på egne data</h2>
+        <h3 id="introduksjon">Introduksjon</h3>
+        <p>Å trene eller finjustere Vicuna 13B på egne data, som NOKUT sine data, innebærer en prosess der modellen tilpasses til spesifikke behov og domener for å forbedre ytelsen på tekstoppsummering og arbeidsassistent-oppgaver. Nedenfor gir jeg en detaljert steg-for-steg veiledning for å finjustere Vicuna 13B.</p>
+
+        <h3 id="forutsetninger">Forutsetninger</h3>
+        <ul>
+            <li><strong>Hardware</strong>: En eller flere GPU-er med minst 24 GB VRAM (f.eks. NVIDIA A100 40GB eller RTX 3090) for å håndtere Vicuna 13B. For større datasett eller raskere trening, vurder flere GPU-er eller cloud-tjenester som AWS, Google Cloud eller Azure.</li>
+            <li><strong>Programvare</strong>: Python 3.8+, PyTorch, Hugging Face Transformers-biblioteket, og eventuelt DeepSpeed eller LoRA for effektiv trening.</li>
+            <li><strong>Data</strong>: NOKUT sine data må være forberedt i et passende format (se steg 1).</li>
+            <li><strong>Tid og ressurser</strong>: Finjustering kan ta fra noen timer til flere dager, avhengig av datamengde og hardware.</li>
+        </ul>
+
+        <h3 id="steg">Steg-for-steg veiledning for å finjustere Vicuna 13B</h3>
+        <h4>Steg 1: Forbered dataene</h4>
+        <ol>
+            <li><strong>Samle inn data</strong>: Identifiser relevante data fra NOKUT, som dokumenter for tekstoppsummering, interne retningslinjer, FAQ-er, og eksempler på administrative spørsmål og svar som arbeidsassistenten skal håndtere.</li>
+            <li><strong>Rens dataene</strong>: Fjern støy, irrelevante deler, personopplysninger (for personvern) og formater dataene konsistent. For eksempel:
+                <ul>
+                    <li>For tekstoppsummering: Par lange dokumenter med manuelt eller automatisk genererte sammendrag.</li>
+                    <li>For arbeidsassistent: Formater data som spørsmål-svar-par eller conversational data.</li>
+                </ul>
+            </li>
+            <li><strong>Strukturer dataene</strong>: Lag et datasett i JSON- eller CSV-format. For eksempel:
+                <ul>
+                    <li>Tekstoppsummering: <code>{"text": "fullt dokument", "summary": "sammendrag"}</code></li>
+                    <li>Arbeidsassistent: <code>{"prompt": "spørsmål", "response": "svar"}</code></li>
+                </ul>
+            </li>
+            <li><strong>Splitt datasettet</strong>: Del dataene i trening (80%), validering (10%) og test (10%) sett for å evaluere modellens ytelse.</li>
+        </ol>
+
+        <h4>Steg 2: Sett opp miljøet</h4>
+        <ol>
+            <li><strong>Installer nødvendig programvare</strong>:
+                <pre><code>pip install torch transformers datasets
+pip install deepspeed peft</code></pre>
+            </li>
+            <li><strong>Last ned Vicuna 13B</strong>:
+                <pre><code>from transformers import AutoModelForCausalLM, AutoTokenizer
+model_name = "lmsys/vicuna-13b-v1.5"
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModelForCausalLM.from_pretrained(model_name, device_map="auto")</code></pre>
+            </li>
+        </ol>
+
+        <h4>Steg 3: Velg en finjusteringsmetode</h4>
+        <p>For å redusere ressursbruk og tid, anbefaler jeg å bruke <strong>parameter-effektiv finjustering</strong> som LoRA (Low-Rank Adaptation) i stedet for full finjustering av alle parametere:</p>
+        <ul>
+            <li><strong>LoRA</strong>: Trener kun et lite sett med adapterparametere, noe som reduserer minnebehov og treningstid.</li>
+            <li><strong>Full finjustering</strong>: Trener alle 13B parametere, noe som krever mye mer minne (flere GPU-er) og tid, men kan gi marginalt bedre resultater.</li>
+        </ul>
+
+        <h4>Ste
+
+g 4: Forbered treningskonfigurasjon</h4>
+        <ol>
+            <li><strong>Konfigurer hyperparametere</strong>:
+                <ul>
+                    <li>Learning rate: Start med en lav verdi, f.eks. 2e-5.</li>
+                    <li>Batch size: Avhengig av GPU-minne, f.eks. 4 eller 8 med gradient accumulation hvis nødvendig.</li>
+                    <li>Epochs: 3-5 epoker er ofte tilstrekkelig for finjustering.</li>
+                    <li>Optimizer: AdamW er standard.</li>
+                </ul>
+            </li>
+            <li><strong>Sett opp datasettet</strong>:
+                <pre><code>from datasets import load_dataset
+dataset = load_dataset('json', data_files={'train': 'train.json', 'validate': 'val.json'})
+def preprocess_function(examples):
+    return tokenizer(examples['prompt'], examples['response'], truncation=True, padding='max_length', max_length=512)
+tokenized_dataset = dataset.map(preprocess_function, batched=True)</code></pre>
+            </li>
+        </ol>
+
+        <h4>Steg 5: Start finjusteringen</h4>
+        <ol>
+            <li><strong>Bruk LoRA med PEFT (Parameter-Efficient Fine-Tuning)</strong>:
+                <pre><code>from peft import LoraConfig, get_peft_model
+lora_config = LoraConfig(
+    r=16,  # Rank of the adaptation
+    lora_alpha=32,
+    target_modules=["q_proj", "v_proj"],
+    lora_dropout=0.05,
+    bias="none",
+    task_type="CAUSAL_LM"
+)
+model = get_peft_model(model, lora_config)</code></pre>
+            </li>
+            <li><strong>Sett opp treningsargumenter</strong>:
+                <pre><code>from transformers import TrainingArguments, Trainer
+training_args = TrainingArguments(
+    output_dir="./vicuna_finetuned",
+    per_device_train_batch_size=4,
+    gradient_accumulation_steps=4,
+    learning_rate=2e-5,
+    max_grad_norm=0.3,
+    num_train_epochs=3,
+    evaluation_strategy="epoch",
+    save_strategy="epoch",
+    load_best_model_at_end=True,
+)
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=tokenized_dataset['train'],
+    eval_dataset=tokenized_dataset['validate'],
+)
+trainer.train()</code></pre>
+            </li>
+        </ol>
+
+        <h4>Steg 6: Evaluer modellen</h4>
+        <ol>
+            <li><strong>Test på testdatasettet</strong>:
+                <pre><code>results = trainer.evaluate(tokenized_dataset['test'])
+print(results)</code></pre>
+            </li>
+            <li><strong>Manuell vurdering</strong>: Generer svar eller sammendrag på eksempler fra NOKUT-data og vurder kvaliteten (nøyaktighet, relevans, flyt).</li>
+        </ol>
+
+        <h4>Steg 7: Optimaliser for inferens</h4>
+        <ol>
+            <li><strong>Kvantisering</strong>:
+                <pre><code>from transformers import BitsAndBytesConfig
+quantization_config = BitsAndBytesConfig(load_in_4bit=True)
+model = AutoModelForCausalLM.from_pretrained(model_name, quantization_config=quantization_config)</code></pre>
+            </li>
+            <li><strong>Lagre modellen</strong>:
+                <pre><code>model.save_pretrained("./vicuna_finetuned_final")
+tokenizer.save_pretrained("./vicuna_finetuned_final")</code></pre>
+            </li>
+        </ol>
+
+        <h4>Steg 8: Implementer og overvåk</h4>
+        <ol>
+            <li><strong>Sett opp inferens</strong>: Bruk den finjusterte modellen i et produksjonsmiljø med et API (f.eks. FastAPI) eller et inferensverktøy som Triton Inference Server.</li>
+            <li><strong>Overvåk ytelse</strong>: Kontinuerlig overvåk output for å sikre nøyaktighet og relevans. Samle tilbakemeldinger fra brukere hos NOKUT for å iterativt forbedre modellen.</li>
+            <li><strong>Oppdater data</strong>: Legg til nye data over tid og finjuster modellen på nytt for å holde den oppdatert med endringer i NOKUT sine prosesser eller dokumenter.</li>
+        </ol>
+
+        <h3 id="tips">Viktige tips og hensyn</h3>
+        <ul>
+            <li><strong>Ressursbegrensninger</strong>: Hvis du har begrenset GPU-minne, bruk LoRA eller gradient checkpointing for å redusere minnebruk. Alternativt, vurder cloud-tjenester for trening.</li>
+            <li><strong>Personvern</strong>: Siden NOKUT kan håndtere sensitive data, sørg for at dataene er anonymisert før trening, og at modellen ikke lekker sensitiv informasjon. Følg GDPR og andre relevante regelverk.</li>
+            <li><strong>Tidsramme</strong>: Avhengig av datamengde (f.eks. 10 000 eksempler) og hardware, kan trening ta fra 12 timer til flere dager.</li>
+            <li><strong>Start lite</strong>: Begynn med et lite datasett og en kortere trening for å teste prosessen før du skalerer opp.</li>
+        </ul>
+
+        <h3 id="ressurser">Ressurser og verktøy</h3>
+        <ul>
+            <li><strong>Hugging Face Tutorials</strong>: Sjekk Hugging Face sin dokumentasjon for detaljerte guider på finjustering av språkmodeller.</li>
+            <li><strong>GitHub-repositories</strong>: Søk etter prosjekter relatert til Vicuna finjustering for ferdige skript og eksempler.</li>
+        </ul>
+
+        <h3 id="konklusjon2">Konklusjon</h3>
+        <p>Finjustering av Vicuna 13B på NOKUT sine data er en gjennomførbar prosess med de riktige verktøyene og ressursene. Ved å følge disse stegene, kan du tilpasse modellen til å håndtere tekstoppsummering og arbeidsassistent-oppgaver effektivt. Hvis du mangler intern kapasitet, vurder å samarbeide med en ekstern partner for å sikre en smidig prosess. Etter finjustering, sørg for kontinuerlig overvåking og oppdatering for å opprettholde modellens relevans og nøyaktighet.</p>
+    </div>
+</body>
+</html>
