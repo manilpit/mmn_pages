@@ -131,10 +131,40 @@ parse_inspera_json <- function(json_file) {
 }
 
 # Test funksjonen med feilhåndtering
-tryCatch({
-  df <- parse_inspera_json("eksport_1936953499.json")
-  print(head(df))
-  write.csv(df, "inspera_resultater.csv", row.names = FALSE)
-}, error = function(e) {
-  cat("Feil:", conditionMessage(e), "\n")
-})
+# tryCatch({
+#   df <- parse_inspera_json("eksport_1936953499.json")
+#   print(head(df))
+#   write.csv(df, "inspera_resultater.csv", row.names = FALSE)
+# }, error = function(e) {
+#   cat("Feil:", conditionMessage(e), "\n")
+# })
+
+library(jsonlite)
+library(dplyr)
+library(tidyr)
+
+# Liste alle json-filene
+json_files <- list.files(pattern = "eksport_.*\\.json")
+
+# Kjør gjennom hver fil
+for(file in json_files) {
+  # Hent ut ID fra filnavnet
+  id <- gsub("eksport_|\\.json", "", file)
+  
+  tryCatch({
+    cat("\nProsesserer fil:", file, "\n")
+    
+    # Parse JSON-filen
+    df <- parse_inspera_json(file)
+    
+    # Lag unikt output-filnavn
+    output_file <- paste0("inspera_resultater_", id, ".csv")
+    
+    # Lagre til CSV
+    write.csv(df, output_file, row.names = FALSE)
+    
+    cat("Fullført prosessering av", file, "- lagret som", output_file, "\n")
+  }, error = function(e) {
+    cat("Feil ved prosessering av", file, ":", conditionMessage(e), "\n")
+  })
+}
